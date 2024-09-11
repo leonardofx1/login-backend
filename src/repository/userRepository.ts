@@ -13,7 +13,10 @@ export class UserRepository implements IUserRepository {
         return userDb
 
     }
-
+     findByEmailUser = async  (email:string) => {
+        return  db.query.user.findFirst({where: eq(user.email, email)})
+     }
+     
 
     async login({ email, password }: Omit<IUser, 'name'>) {
         const userDb = await db.query.user.findFirst({

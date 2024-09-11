@@ -8,14 +8,13 @@ import fastifyCookie from "@fastify/cookie";
 const app = fastify()
 app.register(fastifyCookie)
 app.addHook('preHandler', async (req:FastifyRequest, reply:FastifyReply) => {
-  const route = req.routerPath === '/create'
-  console.log(route)
+  const route = req.routerPath === '/register'
+
   if(route) return
   const jwtFastify = new JwtFastify(app)
   const user = {name:'leonardo',email:'leo2gmail.com'}
   try {
     const token  = jwtFastify.createJwt(user)
-    console.log('deu certo', token)
     reply.setCookie('token',token,{
       httpOnly:true,
       secure:true,
@@ -28,11 +27,11 @@ app.addHook('preHandler', async (req:FastifyRequest, reply:FastifyReply) => {
     
   }
 })
-app.setErrorHandler((error, request, reply) => {
+app.setErrorHandler((error, _, reply) => {
     if (error instanceof ZodError) {
       reply.status(400).send({
         message: 'Erro de validação',
-        errors: error.message,
+        errors: error.format(),
       });
     } else {
       reply.status(500).send({

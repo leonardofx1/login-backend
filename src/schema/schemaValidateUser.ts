@@ -8,4 +8,4 @@ export const schemaValidateUser = z.object({
     password:z.string().min(5,{message:'mínimo de 5 caracteres'}),
 })
 
-export type IUser = z.infer<typeof schemaValidateUser>
+export type IUser = z.infer<typeof schemaValidateUser> 

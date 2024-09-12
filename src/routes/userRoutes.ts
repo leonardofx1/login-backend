@@ -9,6 +9,7 @@ export const userRoutes = async (app: FastifyInstance) => {
   
     
     app.post('/register',controllerUser.registerUser)
+    app.post('/login', controllerUser.loginUser)
 
     
 }

@@ -2,18 +2,19 @@
 import { UserAlreadyExistsError } from "../../../erros/user/userAlreadyExists.error";
 import { IUserRepository } from "../../../repository/IUserRepository";
 import { IUser} from "../../../schema/schemaValidateUser";
-import { encryptPassword, validateUser } from "../../../utils/user/userUtls";
+import { IEncrypt } from "../../../utils/encryptJs/encrypt";
+import { IValidateSchema } from "../../../utils/user/uservalidateCredentials";
+
 import { IRegisterUserCase } from "./IRegisterUserCase";
 
 export class UseRegisterUserCase implements IRegisterUserCase  {
-    constructor(private memoryDb:IUserRepository) {
+    constructor(private memoryDb:IUserRepository, private encryptCredentials:IEncrypt,private validateCredentials:IValidateSchema) {
 
     }
     async createUser (user:IUser) {
   
-        const _user = validateUser(user)
-        
-        const passwordHash =  await encryptPassword(_user.password)
+        const _user = this.validateCredentials.validate(user) as IUser
+        const passwordHash = await  this.encryptCredentials.encryptPassword(_user.password)
         const userEmail = await this.memoryDb.findByEmailUser(_user.email)
 
         if(userEmail) throw new UserAlreadyExistsError()

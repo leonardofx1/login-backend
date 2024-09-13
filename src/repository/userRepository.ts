@@ -2,14 +2,14 @@ import { and, eq, sql } from "drizzle-orm";
 import { db } from "../db";
 import { user } from "../db/schema";
 import { IUser } from "../schema/schemaValidateUser";
-import { IUserRepository } from "./IUserRepository";
+import { IUserDb, IUserRepository } from "./IUserRepository";
 
 
 export class UserRepository implements IUserRepository {
 
     async save(userCreate: IUser) {
         const [userDb] = await db.insert(user).values(userCreate).returning({ name: user.name, email: user.email, password: user.password, id: user.id })
-        console.log('db returning ', userDb)
+    
         return userDb
 
     }
@@ -18,7 +18,7 @@ export class UserRepository implements IUserRepository {
      }
      
 
-    async login({ email, password }: Omit<IUser, 'name'>) {
+    async login({ email, password }: Omit<IUser, 'name'>):IUserDb {
         const userDb = await db.query.user.findFirst({
             where: and(eq(user.email, email), eq(user.password, password)),
             columns: {
@@ -26,6 +26,9 @@ export class UserRepository implements IUserRepository {
             }
         })
 
-        return userDb as Omit<IUser, 'password'> & { id: string } | null
+        if(!!userDb) {
+            return userDb
+        }
+        return undefined
     }
 }

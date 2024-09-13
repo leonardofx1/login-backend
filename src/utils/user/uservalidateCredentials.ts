@@ -6,7 +6,7 @@ export interface IValidateSchema {
     validate(user:IUser) : IUser | ZodError
 }
 
-export class ZodValidate implements IValidateSchema   {
+export class ValidateCredentials implements IValidateSchema   {
     constructor() {}
     validate (user:IUser): IUser | ZodError {
        return  schemaValidateUser.parse(user)

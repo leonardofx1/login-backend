@@ -7,9 +7,10 @@ import { IEncrypt } from "../../../utils/encryptJs/encrypt";
 
 import { ILoginUserCase } from "./ILoginUserCase";
 import { IValidateSchema } from "../../../utils/user/uservalidateCredentials";
+import { IJwt } from "../../../utils/jwt/IJwt";
 
 export class UserLoginCase implements ILoginUserCase {
-    constructor(private memoryDb: IUserRepository, private validateCredentials: IEncrypt, private validateSchemaUser: IValidateSchema, private jwt) { }
+    constructor(private memoryDb: IUserRepository, private validateCredentials: IEncrypt, private validateSchemaUser: IValidateSchema, private jwt:IJwt) { }
 
     async login(credentials: IUser): Promise<IUserAutenticate> {
 

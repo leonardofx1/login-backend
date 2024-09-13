@@ -1,4 +1,4 @@
-import fastify, { FastifyReply, FastifyRequest } from "fastify";
+import fastify from "fastify";
 import { userRoutes} from "../routes/userRoutes";
 import { ZodError } from "zod";
 import fastifyJwt from "@fastify/jwt";
@@ -6,6 +6,11 @@ import { JwtFastify } from "../utils/jwt/jwt";
 import fastifyCookie from "@fastify/cookie";
 
 const app = fastify()
+app.register(userRoutes)
+app.register(fastifyJwt, {
+  secret:'meu-segredo',
+  
+})
 app.register(fastifyCookie)
 
 app.setErrorHandler((error, _, reply) => {
@@ -20,13 +25,8 @@ app.setErrorHandler((error, _, reply) => {
       });
     }
   });
-app.register(userRoutes)
-app.register(fastifyJwt, {
-  secret:'meu-segredo',
-  
-})
-export const fastifyJWT = new JwtFastify(app)
 
+export const fastifyJWT = new JwtFastify(app)
 const start = async () => {
     try {
         await app.listen({
